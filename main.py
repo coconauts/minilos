@@ -1,5 +1,7 @@
 #!/usr/bin/env python
  
+ # Reference: https://www.ozeki.hu/p_3023-how-to-setup-a-nfc-reader-on-raspberry-pi.html
+ 
 import signal
 import time
 import sys
