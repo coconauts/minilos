@@ -1,16 +1,17 @@
 #!/usr/bin/env python
  
  # Reference: https://www.ozeki.hu/p_3023-how-to-setup-a-nfc-reader-on-raspberry-pi.html
- 
+
 import signal
 import time
 import sys
+import spotify
  
 from pirc522 import RFID
 
-ALBUMS = {
-    88: "thriller",
-    89: "queen"
+NFC_TO_ALBUM = {
+    88: "spotify:album:5ht7ItJgpBH7W6vJ5BqpPr",
+    89: "spotify:album:2kHxP4JlbMnThrDoSwkb6y"
 }
  
 run = True
@@ -38,9 +39,12 @@ while run:
     if not error:
         print("Card read UID: " + str(uid[0]) + "," + str(uid[1]) + "," +
                 str(uid[2]) + "," + str(uid[3]))
-        key = uid[2]
-        album_id = ALBUMS.get(key)
-        print("Playing: " + album_id)
+        nfc_key = uid[2]
+
+        spotify_album_uri = NFC_TO_ALBUM.get(nfc_key)
+        spotify.play_album(spotify_album_uri)
+
+
  
         # print("Setting tag")
         # util.set_tag(uid)
