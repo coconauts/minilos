@@ -29,6 +29,23 @@ def end_read(signal, frame):
  
 signal.signal(signal.SIGINT, end_read)
  
+def read_out(block_address):
+    #if not util.is_tag_set_auth():
+    #    return True
+    (error, data) = util.rfid.read(block_address)
+    #print(util.sector_string(block_address) + ": " + data)
+    print(util.sector_string(block_address) + ": " + "".join(chr(e) for e in data))
+    """
+    error = util.do_auth(block_address)
+    if not error:
+        (error, data) = util.rfid.read(block_address)
+        #print(util.sector_string(block_address) + ": " + data)
+        print(util.sector_string(block_address) + ": " + "".join(chr(e) for e in data))
+    else:
+        print("Error on " + util.sector_string(block_address))
+    """
+
+
 print("Starting")
 while run:
     (error, data) = rdr.request()
@@ -41,11 +58,16 @@ while run:
                 str(uid[2]) + "," + str(uid[3]))
         nfc_key = uid[2]
 
-        spotify_album_uri = NFC_TO_ALBUM.get(nfc_key)
-        spotify.play_album(spotify_album_uri)
+        #spotify_album_uri = NFC_TO_ALBUM.get(nfc_key)
+        #spotify.play_album(spotify_album_uri)
 
+        for i in range(0,19):
+            read_out(i)
+        #text = util.read_out(4)
+        #print("Reading " + text)
 
- 
+        #spotify.play(spotify_album_uri)
+
         # print("Setting tag")
         # util.set_tag(uid)
         # print("\nAuthorizing")

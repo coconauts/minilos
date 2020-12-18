@@ -1,3 +1,6 @@
 spotify_keys.py
 *.pyc
 __pycache__
+*.json
+*.log
+*.out

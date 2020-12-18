@@ -3,8 +3,21 @@ import json
 from spotify_keys import *
 from pprint import pprint
 import base64 
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+
+retry_strategy = Retry(
+    total=3,
+    status_forcelist=[429, 500, 502, 503, 504],
+    method_whitelist=["HEAD", "GET", "OPTIONS"]
+)
+adapter = HTTPAdapter(max_retries=retry_strategy)
+http = requests.Session()
+http.mount("https://", adapter)
+http.mount("http://", adapter)
 
 # https://developer.spotify.com/documentation/web-api/reference/player/
+TIMEOUT = 5
 
 def refresh_headers(): 
     access_token = request_refresh_token(refresh_token)
@@ -16,9 +29,10 @@ def refresh_headers():
     }
     return headers
 
-spotify_album_uri = "spotify:album:5ht7ItJgpBH7W6vJ5BqpPr"
 
 def request_refresh_token(token):
+  print("Requesting refresh token")
+
   url = "https://accounts.spotify.com/api/token" 
   data = {
     "grant_type": "refresh_token",
@@ -30,9 +44,9 @@ def request_refresh_token(token):
     'Content-Type': 'application/x-www-form-urlencoded',
     'Authorization': 'Basic {}'.format(base64.b64encode(b64auth.encode("utf-8")).decode("utf-8"))
   }
-  r = requests.post(url , headers=headers, data=data )
+  r = http.post(url , headers=headers, data=data, timeout=TIMEOUT )
 
-  print("status code {}".format(r.status_code))  
+  print("request_refresh_token response: {}".format(r.status_code))  
   print("request_token {}".format(r.text))  
   return r.json()['access_token']
 
@@ -53,22 +67,26 @@ def currently_playing():
   print("CURRENTLY PLAYING {}".format(r.json()))  
 
 
-def play_album(spotify_album_uri=spotify_album_uri, device=device_id):
+def play(spotify_uri, device=device_id):
   url = "https://api.spotify.com/v1/me/player/play?device_id=" + device
   data = {
-    "context_uri": spotify_album_uri,
-    "offset": {
-      "position": 5
-    },
+    "context_uri": spotify_uri,
     "position_ms": 0
   }
-  r = requests.put(url , headers=refresh_headers(), json=data )
+  headers = refresh_headers()
+
+  print("Playing {} on device {}".format(spotify_uri, device))
+
+  r = http.put(url , headers=headers, json=data, timeout=TIMEOUT )
 
   #import pdb; pdb.set_trace()
 
-  print("status code {}".format(r.status_code))  
+  print("play response: {}".format(r.status_code))  
   print("PLAY {}".format(r.text))  
 
-play_album()
+# test 
+#spotify_album_uri = "spotify:album:5ht7ItJgpBH7W6vJ5BqpPr"
+
+# play(spotify_album_uri)
 
 
