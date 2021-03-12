@@ -1,43 +1,81 @@
-from time import sleep
-import sys
-from mfrc522 import SimpleMFRC522
-import spotify
+#!/usr/bin/env python
+ 
+ # Reference: https://www.ozeki.hu/p_3023-how-to-setup-a-nfc-reader-on-raspberry-pi.html
 
-reader = SimpleMFRC522()
+import signal
+import time
+import sys
+import spotify
+ 
+from pirc522 import RFID
 
 NFC_TO_ALBUM = {
-    390: "spotify:album:1kCHru7uhxBUdzkm4gzRQc", # hamilton 
-    927: "spotify:playlist:1kq332GEYrX6D5vrszgDUF", # dropmix
-    460: "spotify:playlist:0uEOz6n3BoNGa39CQVtsbH", # life is strange
-    530: "spotify:playlist:37i9dQZF1DWSNC7AjZWNry", # queen
-    
-    509: "spotify:album:1KCiWQIQtagNrWcJvPTiNe", #trance best of 
-    423: "spotify:playlist:3NkBXHqVwjeyu5fcBcmIRE", #bioshock inspired
-    983: "spotify:playlist:684nXqMbtn1gr1sNSk1MsI", #rock and roll
-    176: "spotify:playlist:5gIPHDwAG2QN38CIdRW2y8", #persona 5
-    131: "spotify:album:4CuBPBeJ8ncHwgQhIgvx2j", #destiny 2 : forsaken
-    835: "spotify:album:1BNQflQCNLW3h9EMWZqpHm", # gentle love: game music lullabies
-
+    88: "spotify:album:5ht7ItJgpBH7W6vJ5BqpPr",
+    89: "spotify:album:2kHxP4JlbMnThrDoSwkb6y"
 }
+ 
+run = True
+rdr = RFID()
+util = rdr.util()
+util.debug = True
+ 
+def end_read(signal, frame):
+    global run
+    print("\nCtrl+C captured, ending read.")
+    run = False
+    rdr.cleanup()
+    sys.exit()
+ 
+ 
+signal.signal(signal.SIGINT, end_read)
+ 
+def read_out(block_address):
+    #if not util.is_tag_set_auth():
+    #    return True
+    (error, data) = util.rfid.read(block_address)
+    #print(util.sector_string(block_address) + ": " + data)
+    print(util.sector_string(block_address) + ": " + "".join(chr(e) for e in data))
+    """
+    error = util.do_auth(block_address)
+    if not error:
+        (error, data) = util.rfid.read(block_address)
+        #print(util.sector_string(block_address) + ": " + data)
+        print(util.sector_string(block_address) + ": " + "".join(chr(e) for e in data))
+    else:
+        print("Error on " + util.sector_string(block_address))
+    """
 
-last_uri = ""
 
-try:
-    while True:
-        print("Hold a tag near the reader")
-        id, text = reader.read()
-        print("ID: %s\nText: %s" % (id,text))
+print("Starting")
+while run:
+    (error, data) = rdr.request()
+    if not error:
+        print("\nDetected: " + format(data, "02x"))
+ 
+    (error, uid) = rdr.anticoll()
+    if not error:
+        print("Card read UID: " + str(uid[0]) + "," + str(uid[1]) + "," +
+                str(uid[2]) + "," + str(uid[3]))
+        nfc_key = uid[2]
 
-        last_3_chars = id % 1000
-        spotify_uri = NFC_TO_ALBUM.get(last_3_chars)
-        if not spotify_uri: 
-            print("NFC not in dict {}".format(last_3_chars))
-        elif spotify_uri != last_uri: # Don't play it twice
-            last_uri = spotify_uri
-            print("Playing {}".format(spotify_uri))
-            spotify.play(spotify_uri)
+        #spotify_album_uri = NFC_TO_ALBUM.get(nfc_key)
+        #spotify.play_album(spotify_album_uri)
 
-        sleep(5)
-except KeyboardInterrupt:
-    GPIO.cleanup()
-    raise
+        for i in range(0,19):
+            read_out(i)
+        #text = util.read_out(4)
+        #print("Reading " + text)
+
+        #spotify.play(spotify_album_uri)
+
+        # print("Setting tag")
+        # util.set_tag(uid)
+        # print("\nAuthorizing")
+        # # util.auth(rdr.auth_a, [0x12, 0x34, 0x56, 0x78, 0x96, 0x92])
+        # util.auth(rdr.auth_b, [0x74, 0x00, 0x52, 0x35, 0x00, 0xFF])
+        # print("\nReading")
+        # util.read_out(4)
+        # print("\nDeauthorizing")
+        # util.deauth()
+ 
+        time.sleep(1)

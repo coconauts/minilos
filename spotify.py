@@ -46,8 +46,8 @@ def request_refresh_token(token):
   }
   r = http.post(url , headers=headers, data=data, timeout=TIMEOUT )
 
-  #print("request_refresh_token response: {}".format(r.status_code))  
-  #print("request_token {}".format(r.text))  
+  print("request_refresh_token response: {}".format(r.status_code))  
+  print("request_token {}".format(r.text))  
   return r.json()['access_token']
 
 def get_devices():
@@ -81,13 +81,12 @@ def play(spotify_uri, device=device_id):
 
   #import pdb; pdb.set_trace()
 
-  #print("play response: {}".format(r.status_code))  
-  #print("PLAY {}".format(r.text))  
+  print("play response: {}".format(r.status_code))  
+  print("PLAY {}".format(r.text))  
 
 # test 
 #spotify_album_uri = "spotify:album:5ht7ItJgpBH7W6vJ5BqpPr"
 
-#play(spotify_album_uri)
+# play(spotify_album_uri)
 
 
-#get_devices()
