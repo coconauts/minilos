@@ -2,23 +2,11 @@ from time import sleep
 import sys
 from mfrc522 import SimpleMFRC522
 import spotify
+from album_mapping import NFC_TO_ALBUM
 
 reader = SimpleMFRC522()
 
-NFC_TO_ALBUM = {
-    390: "spotify:album:1kCHru7uhxBUdzkm4gzRQc", # hamilton 
-    927: "spotify:playlist:1kq332GEYrX6D5vrszgDUF", # dropmix
-    460: "spotify:playlist:0uEOz6n3BoNGa39CQVtsbH", # life is strange
-    530: "spotify:playlist:37i9dQZF1DWSNC7AjZWNry", # queen
-    
-    509: "spotify:album:1KCiWQIQtagNrWcJvPTiNe", #trance best of 
-    423: "spotify:playlist:3NkBXHqVwjeyu5fcBcmIRE", #bioshock inspired
-    983: "spotify:playlist:684nXqMbtn1gr1sNSk1MsI", #rock and roll
-    176: "spotify:playlist:5gIPHDwAG2QN38CIdRW2y8", #persona 5
-    131: "spotify:album:4CuBPBeJ8ncHwgQhIgvx2j", #destiny 2 : forsaken
-    835: "spotify:album:1BNQflQCNLW3h9EMWZqpHm", # gentle love: game music lullabies
 
-}
 
 last_uri = ""
 
