@@ -9,7 +9,7 @@ import base64
 app = Flask(__name__)
 
 
-
+server_ip="localhost" # 192.168.2.52
 
 def request_token(code):
   url = "https://accounts.spotify.com/api/token" 
@@ -38,8 +38,8 @@ def callback():
 
 print("Oauth process started, click on this URL to begin auth")
 
-scopes = 'user-read-private user-read-currently-playing user-modify-playback-state'
-redirect_uri = "http://localhost:5000/callback"
+scopes = 'user-read-private user-read-currently-playing user-modify-playback-state user-read-playback-state'
+redirect_uri = "http://{}:5000/callback".format(server_ip)
 auth_url = 'https://accounts.spotify.com/authorize?response_type=code&client_id={}&scope={}&redirect_uri={}'.format(
     client_id , urllib.parse.quote(scopes), urllib.parse.quote(redirect_uri)
 ) 

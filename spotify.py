@@ -87,7 +87,7 @@ def play(spotify_uri, device=device_id):
 # test 
 #spotify_album_uri = "spotify:album:5ht7ItJgpBH7W6vJ5BqpPr"
 
-#play(spotify_album_uri)
+#play("spotify:album:5ht7ItJgpBH7W6vJ5BqpPr")
 
 
 #get_devices()

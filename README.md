@@ -15,7 +15,7 @@ Spotify APP dashboard https://developer.spotify.com/dashboard/applications
 
 ### How to authenticate
 
-First run ` export FLASK_APP=spotify_auth.py ; flask run` 
+First run ` export FLASK_APP=spotify_auth.py ; flask run --host=0.0.0.0` 
 then click on the `/authorize` endpoint that will appear on the console 
 This will take you to a browser where you can login
 The callback will request a final token for your user
