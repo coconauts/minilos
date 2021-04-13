@@ -1,4 +1,5 @@
 spotify_keys.py
+album_mapping.py
 *.pyc
 __pycache__
 *.json
