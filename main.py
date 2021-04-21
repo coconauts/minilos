@@ -3,6 +3,7 @@ import sys
 from mfrc522 import SimpleMFRC522
 import spotify
 from album_mapping import NFC_TO_ALBUM
+import RPi.GPIO as GPIO  
 
 reader = SimpleMFRC522()
 
