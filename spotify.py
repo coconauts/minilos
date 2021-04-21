@@ -1,5 +1,6 @@
 import requests 
 import json
+import sys
 from spotify_keys import *
 from pprint import pprint
 import base64 
@@ -48,6 +49,11 @@ def request_refresh_token(token):
 
   #print("request_refresh_token response: {}".format(r.status_code))  
   #print("request_token {}".format(r.text))  
+
+  if r.status_code > 302:
+    print("Error connecting to spotify: \n {}".format(r.text))
+    sys.exit(2)
+
   return r.json()['access_token']
 
 def get_devices():
