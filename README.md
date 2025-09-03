@@ -1,3 +1,5 @@
+![minilos IRL](minilos.jpg)
+
 "Minilos" (or "minyls") is an attempt to adapt the experience of owning and playing vinyl records to the digital age.
 
 NFC-enabled mini-vynils are read with a raspberry-pi-powered record-player, which reads the album from the NFC chip and plays it on spotify using their REST API.
