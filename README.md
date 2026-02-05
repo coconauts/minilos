@@ -56,3 +56,5 @@ This refresh token will be used to get a brand new auth_token everytime you make
 ### Personalize your minilos
 
 The file `album_mapping.py` contains a mapping from NFC tag IDs to spotify album/playlist/song URIs. Add your own!
+
+Use the `cover.xcf` template to create tag images for your minilos, using GIMP.
